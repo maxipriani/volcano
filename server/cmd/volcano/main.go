@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"volcano_server/internal/auth"
 	"volcano_server/internal/config"
@@ -28,7 +29,7 @@ func main() {
 	db, err := database.Init(cfg)
 
 	if err != nil {
-		logger.Logger().Error("Failed to initialize the database", "error", err)
+		slog.Error("Failed to initialize the database", "error", err)
 		return
 	}
 
@@ -44,16 +45,16 @@ func setUpRoutes() {
 	http.HandleFunc("/auth/verify", auth.RequirePOST(auth.ValidateToken(auth.ApiKeyVerificationHandler)))
 	http.HandleFunc("/auth/logout", auth.RequirePOST(auth.ValidateToken(auth.LogoutHandler)))
 
-	logger.Logger().Info("Routes configured")
+	slog.Info("Routes configured")
 }
 
 func startServer(address string) {
-	logger.Logger().Info("Starting HTTP server", "address", address)
+	slog.Info("Starting HTTP server", "address", address)
 	fmt.Println("=== Server ON ===")
 
 	err := http.ListenAndServe(address, nil)
 	if err != nil {
-		logger.Logger().Error("Failed to start server", "error", err)
+		slog.Error("Failed to start server", "error", err)
 		return
 	}
 

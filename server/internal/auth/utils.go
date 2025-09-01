@@ -3,8 +3,8 @@ package auth
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"log/slog"
 	"net/http"
-	"volcano_server/internal/logger"
 )
 
 func generateApiKey() string {
@@ -12,7 +12,7 @@ func generateApiKey() string {
 	_, err := rand.Read(bytes)
 
 	if err != nil {
-		logger.Logger().Error("Failed to generate API key", "error", err)
+		slog.Error("Failed to generate API key", "error", err)
 		return ""
 	}
 

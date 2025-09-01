@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-var logger *slog.Logger
-
 func Init() {
 
 	logDir := os.Getenv("LOG_DIR")
@@ -32,7 +30,7 @@ func Init() {
 		os.Exit(1)
 	}
 
-	logger = slog.New(slog.NewTextHandler(logFile, &slog.HandlerOptions{
+	logger := slog.New(slog.NewTextHandler(logFile, &slog.HandlerOptions{
 
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 			if a.Key == slog.TimeKey {
@@ -42,9 +40,6 @@ func Init() {
 		},
 	}))
 
-	logger.Info("Logger initialized", "log_file", fmt.Sprintf(logDir+"/volcano_server-%s.log", timestamp))
-}
-
-func Logger() *slog.Logger {
-	return logger
+	slog.SetDefault(logger)
+	slog.Info("Logger initialized", "log_file", fmt.Sprintf("%s/volcano_server-%s.log", logDir, timestamp))
 }

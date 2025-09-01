@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"log/slog"
 	"time"
 	"volcano_server/internal/database"
-	"volcano_server/internal/logger"
 )
 
 type User struct {
@@ -48,7 +48,7 @@ func (user *User) updateApiKey() error {
 	_, err := database.DB.Exec(query, apiKey, user.Name)
 
 	if err != nil {
-		logger.Logger().Error("Failed to update API key", "user", user.Name, "error", err)
+		slog.Error("Failed to update API key", "user", user.Name, "error", err)
 		return err
 	}
 

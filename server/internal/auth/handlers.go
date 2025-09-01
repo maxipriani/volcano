@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
-	"volcano_server/internal/logger"
 )
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,11 +15,11 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		IP:   getUserIpFromRequest(r),
 	}
 
-	logger.Logger().Info("User logout attempt", "user", requestUser.Name, "ip", requestUser.IP)
+	slog.Info("User logout attempt", "user", requestUser.Name, "ip", requestUser.IP)
 	err := requestUser.updateLastSeen()
 
 	if err != nil {
-		logger.Logger().Error("Failed to update last seen on logout", "user", requestUser.Name, "error", err)
+		slog.Error("Failed to update last seen on logout", "user", requestUser.Name, "error", err)
 	}
 
 }
@@ -50,20 +50,20 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		loadErr := newUser.createUser()
 
 		if loadErr != nil {
-			logger.Logger().Error("Failed to create user", "user", newUser.Name, "error", loadErr)
+			slog.Error("Failed to create user", "user", newUser.Name, "error", loadErr)
 			response := AuthResponse{Success: false, Status: "database_error"}
 			sendJSONResponse(w, response)
 			return
 		}
 
-		logger.Logger().Info("New user created", "user", newUser.Name, "ip", newUser.IP)
+		slog.Info("New user created", "user", newUser.Name, "ip", newUser.IP)
 		response := AuthResponse{Success: false, Status: "pending_authorization"}
 		sendJSONResponse(w, response)
 		return
 	}
 
 	if err != nil {
-		logger.Logger().Error("Failed to find user in database", "user", requestUser.Name, "error", err)
+		slog.Error("Failed to find user in database", "user", requestUser.Name, "error", err)
 		response := AuthResponse{Success: false, Status: "database_error"}
 		sendJSONResponse(w, response)
 		return
@@ -76,19 +76,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			err := user.updateIP()
 
 			if err != nil {
-				logger.Logger().Error("Failed to update IP", "user", user.Name, "error", err)
+				slog.Error("Failed to update IP", "user", user.Name, "error", err)
 			}
 
 		}
 
-		logger.Logger().Info("Privileged user login", "user", user.Name, "ip", user.IP)
+		slog.Info("Privileged user login", "user", user.Name, "ip", user.IP)
 		response := AuthResponse{Success: true, Status: "privileged_user"}
 		sendJSONResponse(w, response)
 		return
 	}
 
 	if !user.Authorized {
-		logger.Logger().Warn("Unauthorized user access attempt", "user", user.Name, "ip", requestUser.IP)
+		slog.Warn("Unauthorized user access attempt", "user", user.Name, "ip", requestUser.IP)
 		response := AuthResponse{Success: false, Status: "unauthorized_user"}
 		sendJSONResponse(w, response)
 		return
@@ -99,19 +99,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err := user.updateApiKey()
 
 		if err != nil {
-			logger.Logger().Error("Failed to generate API key", "user", user.Name, "error", err)
+			slog.Error("Failed to generate API key", "user", user.Name, "error", err)
 			response := AuthResponse{Success: false, Status: "error"}
 			sendJSONResponse(w, response)
 			return
 		}
 
-		logger.Logger().Info("API key generated", "user", user.Name)
+		slog.Info("API key generated", "user", user.Name)
 		response := AuthResponse{Success: true, Status: "api_key_generated", ApiKey: user.ApiKey}
 		sendJSONResponse(w, response)
 		return
 	}
 
-	logger.Logger().Info("Login attempt", "user", user.Name, "ip", user.IP)
+	slog.Info("Login attempt", "user", user.Name, "ip", user.IP)
 	response := AuthResponse{Success: true, Status: "authorized", ApiKey: user.ApiKey}
 	sendJSONResponse(w, response)
 }
@@ -126,7 +126,7 @@ func ApiKeyVerificationHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := findUserByName(requestUser.Name)
 
 	if err != nil {
-		logger.Logger().Error("Failed to find user during api key verification", "user", requestUser.Name, "error", err)
+		slog.Error("Failed to find user during api key verification", "user", requestUser.Name, "error", err)
 		response := AuthResponse{Success: false, Status: "invalid_user"}
 		sendJSONResponse(w, response)
 		return
@@ -138,7 +138,7 @@ func ApiKeyVerificationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Logger().Info("Successful login", "user", user.Name)
+	slog.Info("Successful login", "user", user.Name)
 	response := AuthResponse{Success: true, Status: "valid_api_key"}
 	sendJSONResponse(w, response)
 }
