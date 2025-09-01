@@ -1,0 +1,9 @@
+# Binaries
+build/
+
+# Others
+.vs/
+*.vcxproj.user
+*.vcxproj.filters
+*.ini
+*.log

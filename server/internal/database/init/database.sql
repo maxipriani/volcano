@@ -1,0 +1,9 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(256) NOT NULL,
+    ip VARCHAR(128) NOT NULL,
+    api_key VARCHAR(64) NOT NULL,
+    authorized TINYINT(1) NOT NULL DEFAULT 0,
+    privileged TINYINT(1) NOT NULL DEFAULT 0,
+    last_seen TIMESTAMP NULL DEFAULT NULL
+);

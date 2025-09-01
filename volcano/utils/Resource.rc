@@ -1,0 +1,30 @@
+//Microsoft Visual C++ generated resource script.
+//
+#include "Resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Dialog resources
+/////////////////////////////////////////////////////////////////////////////
+
+IDI_ICON1 ICON "../assets/icon/volcano.ico"
+IDD_APIKEY DIALOGEX 0, 0, 200, 70
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW
+CAPTION "== Authentication =="
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Enter your API key:",IDC_STATIC,7,10,186,8
+    EDITTEXT        IDC_APIKEY_EDIT,7,24,186,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Validate",IDOK,35,49,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,115,49,50,14
+END
