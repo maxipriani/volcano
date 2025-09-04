@@ -17,11 +17,9 @@ Player Player::GetPlayerInfo(int index, const GameState& gameState, Memory& memo
 
     char playerName[128] = {};
     memory.ReadArray(playerController + offsets::client_dll::m_iszPlayerName(), playerName, sizeof(playerName) / sizeof(playerName[0]));
-    //memory.ReadArray(playerController + offsets::client_dll::m_iszPlayerName, playerName, sizeof(playerName) / sizeof(playerName[0]));
     std::string name = std::string(playerName);
 
     uintptr_t playerPawnHandle = memory.Read<uintptr_t>(playerController + offsets::client_dll::m_hPawn());
-    //uintptr_t playerPawnHandle = memory.Read<uintptr_t>(playerController + offsets::client_dll::m_hPawn);
     if (!playerPawnHandle) return Player();
 
     uintptr_t pawnListEntry = memory.Read<uintptr_t>(gameState.entityList + (8 * ((playerPawnHandle & 0x7FFF) >> 9) + 16));
@@ -32,17 +30,13 @@ Player Player::GetPlayerInfo(int index, const GameState& gameState, Memory& memo
 
     int health = memory.Read<int>(pawn + offsets::client_dll::m_iHealth());
     int team = memory.Read<uint8_t>(pawn + offsets::client_dll::m_iTeamNum());
+
     Vector3 worldPos = memory.Read<Vector3>(pawn + offsets::client_dll::m_vOldOrigin());
-
-    //int health = memory.Read<int>(pawn + offsets::client_dll::m_iHealth);
-    //int team = memory.Read<uint8_t>(pawn + offsets::client_dll::m_iTeamNum);
-    //Vector3 worldPos = memory.Read<Vector3>(pawn + offsets::client_dll::m_vOldOrigin);
-
     Vector3 worldHead = worldPos;
     worldHead.z += 80.f;
+
 	bool isLocalPlayer = (gameState.localPlayer == pawn);
     Vector3 localPlayerWorldPos = memory.Read<Vector3>(gameState.localPlayer + offsets::client_dll::m_vOldOrigin());
-    /*Vector3 localPlayerWorldPos = memory.Read<Vector3>(gameState.localPlayer + offsets::client_dll::m_vOldOrigin);*/
     float distance = localPlayerWorldPos.distance(worldPos);
 
     return Player(pawn, team, health, worldPos, worldHead, distance, name, isLocalPlayer);

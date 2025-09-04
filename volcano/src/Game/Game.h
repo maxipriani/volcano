@@ -1,7 +1,6 @@
 #pragma once
 #include "../Memory/Memory.h"
 #include "../Offsets/Offsets.h"
-//#include "../Offsets/Offsets_.h"
 #include "../Vector/Vec3.h"
 
 class GameState {

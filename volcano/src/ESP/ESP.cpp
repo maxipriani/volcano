@@ -9,8 +9,6 @@ ESP::ESP(Memory& mem, Render* render, Config* config) :
 {   
     resX = memory.Read<int>(gameState.engineDLL + offsets::engine2_dll::dwWindowWidth());;
     resY = memory.Read<int>(gameState.engineDLL + offsets::engine2_dll::dwWindowHeight());
-    //resX = memory.Read<int>(gameState.engineDLL + offsets::engine2_dll::dwWindowWidth);;
-    //resY = memory.Read<int>(gameState.engineDLL + offsets::engine2_dll::dwWindowHeight);
     wts = new WorldToScreen(gameState.viewMatrix, resX, resY);
 }
 
@@ -101,11 +99,9 @@ bool ESP::GetBonePosition(uintptr_t pawn, int boneIndex, Vector3& bonePosition) 
     if (!pawn) return false;
 
     uintptr_t gameSceneNode = memory.Read<uintptr_t>(pawn + offsets::client_dll::m_pGameSceneNode());
-    //uintptr_t gameSceneNode = memory.Read<uintptr_t>(pawn + offsets::client_dll::m_pGameSceneNode);
     if (!gameSceneNode) return false;
 
     uintptr_t boneArray = memory.Read<uintptr_t>(gameSceneNode + offsets::client_dll::m_modelState() + 0x80);
-    //uintptr_t boneArray = memory.Read<uintptr_t>(gameSceneNode + offsets::client_dll::m_modelState + 0x80);
     if (!boneArray) return false;
 
     bonePosition = memory.Read<Vector3>(boneArray + (boneIndex * 0x20));
