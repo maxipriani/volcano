@@ -97,6 +97,14 @@ public:
     ~Memory();
     DWORD GetPID(const wchar_t* processName);
     bool IsProcessFound() { return targetpID != 0; }
+
+    bool IsProcessAlive() {
+        if (!hHijacked) return false;
+        DWORD code = 0;
+        if (!GetExitCodeProcess(hHijacked, &code)) return false;
+        return code == STILL_ACTIVE; // 259
+    }
+
     const std::uintptr_t GetModuleAddress(const wchar_t* moduleName) const noexcept;
 
     template <typename T>

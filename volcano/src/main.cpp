@@ -64,7 +64,7 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
                 break;
             }
 
-            if (!memory.IsProcessFound()) {
+            if (!memory.IsProcessAlive()) {
                 running = false;
                 break;
             }
